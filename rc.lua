@@ -55,7 +55,7 @@ local function run_once(cmd_arr)
     end
 end
 
-run_once({ "unclutter -root", "synapse", "slack" }) -- entries must be comma-separated
+run_once({ "unclutter -root", "slack", "gnome-flashback", "nm-applet" }) -- entries must be comma-separated
 -- }}}
 
 -- {{{ Variable definitions
@@ -73,13 +73,13 @@ local themes = {
     "vertex",          -- 10
 }
 
-local chosen_theme = themes[5]
+local chosen_theme = themes[6]
 local modkey       = "Mod4"
 local altkey       = "Mod1"
-local terminal     = "x-terminal-emulator"
+local terminal     = "gnome-terminal"
 local editor       = os.getenv("EDITOR") or "nano"
 local gui_editor   = "gvim"
-local browser      = "google-chrome"
+local browser      = "firefox"
 local guieditor    = "atom"
 local scrlocker    = "xlock"
 
@@ -344,6 +344,8 @@ globalkeys = my_table.join(
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
               {description = "open a terminal", group = "launcher"}),
+    awful.key({ modkey,           }, "d", function () awful.spawn("sh -c 'XONTRIB_EDDIE_DEV=true gnome-terminal'") end,
+              {description = "open a debugging terminal", group = "launcher"}),
     awful.key({ modkey, "Control" }, "r", awesome.restart,
               {description = "reload awesome", group = "awesome"}),
     awful.key({ modkey, "Shift"   }, "q", awesome.quit,
@@ -476,6 +478,7 @@ globalkeys = my_table.join(
               {description = "run browser", group = "launcher"}),
     awful.key({ modkey }, "a", function () awful.spawn(guieditor) end,
               {description = "run gui editor", group = "launcher"}),
+    awful.key({ "Control" }, "space", function () awful.spawn("rofi -show-icons -modi drun,window,ssh,run -show drun") end, {description = "run rofi launcher", group = "launcher"}),
 
     -- Default
     --[[ Menubar
@@ -515,7 +518,7 @@ clientkeys = my_table.join(
             c:raise()
         end,
         {description = "toggle fullscreen", group = "client"}),
-    awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill()                         end,
+    awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill() end, -- awesome.kill(c.pid, awesome.unix_signal['SIGTERM'])  end, -- naughty.notify({ preset = naughty.config.presets.critical, title = "Kiling PID!", text = tostring(c.pid) }) end,
               {description = "close", group = "client"}),
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ,
               {description = "toggle floating", group = "client"}),
